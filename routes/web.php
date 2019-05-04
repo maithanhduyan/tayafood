@@ -19,3 +19,7 @@ Route::get('/', 'Shop\ProductController@show');
 Route::get('/user', function () {
     return new UserResource(User::find(1));
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

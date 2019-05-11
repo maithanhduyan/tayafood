@@ -16,9 +16,9 @@ use App\Http\Resources\User as UserResource;
 // SHOP
 Route::get('/', 'Shop\ProductController@show');
 
-Route::get('/user', function () {
-    return new UserResource(User::find(1));
-});
+// Route::get('/user', function () {
+//     return new UserResource(User::find(1));
+// });
 
 Auth::routes();
 

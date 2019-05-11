@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 /*
 |--------------------------------------------------------------------------
@@ -23,11 +23,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 |--------------------------------------------------------------------------
 | Using Laravel Passport
 | OAuth2
-|
+| http://your-domain.com/api/user/{route}
 */
 
-Route::post('login', 'API\UserController@login');
-Route::post('register', 'API\UserController@register');
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('details', 'API\UserController@details');
+Route::prefix('user')->group(function () {
+
+    Route::post('login', 'API\UserController@login');
+    Route::post('register', 'API\UserController@register');
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::post('details', 'API\UserController@details');
+    });
 });

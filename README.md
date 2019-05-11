@@ -26,6 +26,14 @@ CREATE USER 'username'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'username'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 ~~~~
+Public any where
+~~~~
+CREATE USER 'username'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON *.* TO 'username'@'%' WITH GRANT OPTION;
+CREATE USER 'username'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON *.* TO 'username'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+~~~~
 
 # Config SSL for XAMPP server
 
@@ -259,3 +267,34 @@ return response()->json(['success'=>$success], $this-> successStatus);
 Now we are ready to run our example so run below command to quick run:
 
 >php artisan serve
+
+# Production 
+[Document](https://laravel.com/docs/5.8/deployment)
+Autoloader Optimization
+When deploying to production, make sure that you are optimizing Composer's class autoloader map so Composer can quickly find the proper file to load for a given class:
+>composer install --optimize-autoloader --no-dev
+
+Optimizing Configuration Loading
+When deploying your application to production, you should make sure that you run the  config:cache Artisan command during your deployment process:
+>php artisan config:cache
+This command will combine all of Laravel's configuration files into a single, cached file, which greatly reduces the number of trips the framework must make to the filesystem when loading your configuration values.
+
+Optimizing Route Loading
+If you are building a large application with many routes, you should make sure that you are running the route:cache Artisan command during your deployment process:
+>php artisan route:cache
+
+This command reduces all of your route registrations into a single method call within a cached file, improving the performance of route registration when registering hundreds of routes.
+
+* WARNIG
+Since this feature uses PHP serialization, you may only cache the routes for applications that exclusively use controller based routes. PHP is not able to serialize Closures.
+
+Don't user route like this
+~~~~
+Route::get('/user', function () {
+    return new UserResource(User::find(1));
+});
+~~~~
+You must be use controller for route.
+ 
+# Deploy on Ubuntu server 
+[Guide] (https://tecadmin.net/install-laravel-framework-on-ubuntu/)

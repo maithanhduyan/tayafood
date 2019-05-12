@@ -76,5 +76,8 @@
             @yield('content')
         </main>
     </div>
+    <div class="footer">2019 TAYAFOOD.COM</div>
+
+    
 </body>
 </html>

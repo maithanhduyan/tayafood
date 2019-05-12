@@ -298,3 +298,24 @@ You must be use controller for route.
  
 # Deploy on Ubuntu server 
 [Guide] (https://tecadmin.net/install-laravel-framework-on-ubuntu/)
+
+# CORS - Cross-Origin Resource Sharing
+[Document](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+
+# Laravel Telescope
+[Documnet](https://laravel.com/docs/5.8/telescope)
+
+>composer require laravel/telescope
+
+>php artisan telescope:install
+
+>php artisan migrate
+
+>php artisan telescope:publish
+
+
+
+
+
+
+

@@ -13,13 +13,21 @@ use App\Http\Resources\User as UserResource;
 |
 */
 
+Auth::routes();
+
 // SHOP
 Route::get('/', 'Shop\ProductController@show');
 
-// Route::get('/user', function () {
-//     return new UserResource(User::find(1));
-// });
-
-Auth::routes();
-
+/*
+|--------------------------------------------------------------------------
+| Home 
+|--------------------------------------------------------------------------
+*/
 Route::get('/home', 'HomeController@index')->name('home');
+/*
+|--------------------------------------------------------------------------
+| Articles 
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/article', 'ArticlesController@index')->name('article.index');

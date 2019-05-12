@@ -27,10 +27,13 @@ use Illuminate\Http\Request;
 */
 
 Route::prefix('user')->group(function () {
-
     Route::post('login', 'API\UserController@login');
     Route::post('register', 'API\UserController@register');
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('details', 'API\UserController@details');
     });
+});
+
+Route::prefix('articles')->group(function(){
+    Route::get('list','API\ArticlesController@list')->name('articles.list');
 });

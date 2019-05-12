@@ -17,8 +17,8 @@
     <link rel="stylesheet" href="{{asset('libs/fontawesome/css/fontawesome.min.css')}}">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('libs/bootstrap/css/bootstrap.min.css')}}" crossorigin="anonymous">
+    <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{asset('libs/bootstrap/css/bootstrap.min.css')}}">
     @stack('styles')
 </head>
 
@@ -74,22 +74,23 @@
             </div>
         </nav>
 
-        <main class="py-4">
-            @yield('content')
-        </main>
+
+        @yield('content')
+
     </div>
     <div class="footer">2019 TAYAFOOD.COM</div>
 
 
 </body>
 <!-- Scripts -->
-<script src="{{ asset('js/app.js') }}" defer></script>
+<!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
 <!-- JQuery -->
 <script src="{{asset('libs/jquery/jquery.min.js')}}"></script>
 <script>
     $.ajaxSetup({
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            "Authorization": "Bearer: ......"
         }
     });
 </script>

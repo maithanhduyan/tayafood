@@ -71,6 +71,9 @@ in file C:\xampp\apache\conf\extra\httpd-vhosts.conf
 
 # Authentication with Laravel Passport
 
+[Sample Laravel 5.8](https://itsolutionstuff.com/post/build-restful-api-in-laravel-58-exampleexample.html)
+[Sample Laravel 5.7](http://itsolutionstuff.com/post/laravel-57-create-rest-api-with-authentication-using-passport-tutorialexample.html#at_pco=smlwn-1.0&at_si=5cd7fd2ee35dec78&at_ab=per-2&at_pos=0&at_tot=1)
+
 ## Step 1: Install package
 >composer require laravel/passport
  
@@ -332,6 +335,15 @@ You must be use controller for route.
 
 - Clear Config cache:
 >php artisan config:cache
+Other
+Expired reset tokens clear
+>php artisan auth:clear-resets
+Migration created successfully
+>php artisan session:table
+Telescope entires cleared
+>php artisan telescope:clear
+Cache event cleared
+>php artisan event:clear
 
 # Bower
 A package manager for the web
@@ -341,7 +353,80 @@ A package manager for the web
 
 >bower install 
 
+# Reset Password
+[Document](https://medium.com/modulr/api-rest-with-laravel-5-6-passport-authentication-reset-password-part-4-50d27455dcca)
 
+# OAuth2 
+[Document](https://tools.ietf.org/html/rfc6749)
+~~~~
+     +--------+                               +---------------+
+     |        |--(A)- Authorization Request ->|   Resource    |
+     |        |                               |     Owner     |
+     |        |<-(B)-- Authorization Grant ---|               |
+     |        |                               +---------------+
+     |        |
+     |        |                               +---------------+
+     |        |--(C)-- Authorization Grant -->| Authorization |
+     | Client |                               |     Server    |
+     |        |<-(D)----- Access Token -------|               |
+     |        |                               +---------------+
+     |        |
+     |        |                               +---------------+
+     |        |--(E)----- Access Token ------>|    Resource   |
+     |        |                               |     Server    |
+     |        |<-(F)--- Protected Resource ---|               |
+     +--------+                               +---------------+
+~~~~
 
+## Refresh Token
+~~~~
+  +--------+                                           +---------------+
+  |        |--(A)------- Authorization Grant --------->|               |
+  |        |                                           |               |
+  |        |<-(B)----------- Access Token -------------|               |
+  |        |               & Refresh Token             |               |
+  |        |                                           |               |
+  |        |                            +----------+   |               |
+  |        |--(C)---- Access Token ---->|          |   |               |
+  |        |                            |          |   |               |
+  |        |<-(D)- Protected Resource --| Resource |   | Authorization |
+  | Client |                            |  Server  |   |     Server    |
+  |        |--(E)---- Access Token ---->|          |   |               |
+  |        |                            |          |   |               |
+  |        |<-(F)- Invalid Token Error -|          |   |               |
+  |        |                            +----------+   |               |
+  |        |                                           |               |
+  |        |--(G)----------- Refresh Token ----------->|               |
+  |        |                                           |               |
+  |        |<-(H)----------- Access Token -------------|               |
+  +--------+           & Optional Refresh Token        +---------------+
 
+               Figure 2: Refreshing an Expired Access Token
+~~~~
 
+[Document](https://www.toptal.com/laravel/restful-laravel-api-tutorial)
+>php artisan make:migration --table=users adds_api_token_to_users_table
+
+~~~~
+public function up()
+{
+    Schema::table('users', function (Blueprint $table) {
+        $table->string('api_token', 60)->unique()->nullable();
+    });
+}
+
+public function down()
+{
+    Schema::table('users', function ($table) {
+        $table->string('api_token', 80)->after('password')
+            ->unique()
+            ->nullable()
+            ->default(null);
+    });
+}
+~~~~
+Add new column in database->table->users
+>php artisan migrate
+
+# Basic Token Authentication
+[Guide](https://www.toptal.com/laravel/restful-laravel-api-tutorial)

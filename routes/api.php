@@ -40,4 +40,7 @@ Route::prefix('users')->group(function () {
 */
 Route::prefix('article')->group(function () {
     Route::get('list', 'API\ArticlesController@list')->name('articles.list');
+    Route::group(['middleware' => 'auth:api'], function () {
+        //Auth
+    });
 });

@@ -179,6 +179,9 @@ return [
         // Laravel Passport
         Laravel\Passport\PassportServiceProvider::class,
 
+        // Laravel Datatables
+        Yajra\DataTables\DataTablesServiceProvider::class,
+
     ],
 
     /*

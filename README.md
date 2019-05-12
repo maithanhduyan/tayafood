@@ -313,7 +313,33 @@ You must be use controller for route.
 
 >php artisan telescope:publish
 
+# Datatables for Laravel
+[Document](https://yajrabox.com/docs/laravel-datatables/master)
 
+>composer require yajra/laravel-datatables-oracle
+
+# Clear cache
+- Reoptimized class loader:  
+>php artisan optimize  
+
+- Clear Cache facade value:  
+>php artisan cache:clear
+- Clear Route cache:
+>php artisan route:cache  
+
+ Clear View cache:
+>php artisan view:clear
+
+- Clear Config cache:
+>php artisan config:cache
+
+# Bower
+A package manager for the web
+>npm install -g bower
+
+>bower install jquery
+
+>bower install 
 
 
 

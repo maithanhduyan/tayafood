@@ -26,14 +26,18 @@ use Illuminate\Http\Request;
 | http://your-domain.com/api/user/{route}
 */
 
-Route::prefix('user')->group(function () {
+Route::prefix('users')->group(function () {
     Route::post('login', 'API\UserController@login');
     Route::post('register', 'API\UserController@register');
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('details', 'API\UserController@details');
     });
 });
-
-Route::prefix('articles')->group(function(){
-    Route::get('list','API\ArticlesController@list')->name('articles.list');
+/*
+|--------------------------------------------------------------------------
+| API Routes for Articles
+|--------------------------------------------------------------------------
+*/
+Route::prefix('article')->group(function () {
+    Route::get('list', 'API\ArticlesController@list')->name('articles.list');
 });

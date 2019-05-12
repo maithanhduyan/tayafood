@@ -15,7 +15,11 @@ use App\Http\Resources\User as UserResource;
 
 Auth::routes();
 
-// SHOP
+/*
+|--------------------------------------------------------------------------
+| Shop 
+|--------------------------------------------------------------------------
+*/
 Route::get('/', 'Shop\ProductController@show');
 
 /*

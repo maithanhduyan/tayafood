@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Dot-Connect</title>
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        body {
+            width: 360px;
+            height: 264px;
+            z-index: -9999;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 80px;
+            margin-bottom: auto;
+        }
+
+        canvas {
+            background-color: #e9ecef;
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -9999;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="dot-connect">
+    </canvas>
+
+    <!-- Login -->
+    <div class="login-box">
+        <div class="login-logo ">
+            <a href="#"><b class="text-primary font-weight-bold">LOGO</b>-SOFTWARE</a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="card card-primary card-outline">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Sign in to start your session.</p>
+
+                <form method="POST" action="#">
+
+                    <div class="form-group has-feedback">
+                        <input id="email" type="email" class="form-control " placeholder="Email" name="email" value=""
+                            required autofocus>
+                        <span class="fa fa-envelope form-control-feedback"></span>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <input id="password" type="password" class="form-control" placeholder="Password"
+                            name="password">
+                        <span class="fa fa-lock form-control-feedback"></span>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="checkbox icheck">
+                                <label>
+                                    <input name="remember" type="checkbox" id="remember">
+                                    Remember me.
+                                </label>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">Sign in</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </form>
+
+                <p class="mb-1">
+                    <a href="#">I forgot my password.</a>
+                </p>
+                <p class="mb-0">
+                </p>
+            </div>
+            <!-- /.login-card-body -->
+        </div>
+    </div>
+    <!-- /.login-box -->
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script>
+        var canvas = document.getElementById('dot-connect'),
+            can_w = parseInt(canvas.getAttribute('width')),
+            can_h = parseInt(canvas.getAttribute('height')),
+            ctx = canvas.getContext('2d');
+
+        // console.log(typeof can_w);
+
+        var ball = {
+            x: 0,
+            y: 0,
+            vx: 0,
+            vy: 0,
+            r: 0,
+            alpha: 1,
+            phase: 0
+        },
+            ball_color = {
+                r: 0,
+                g: 123,
+                b: 255
+            },
+            R = 4,
+            balls = [],
+            alpha_f = 0.03,
+            alpha_phase = 0,
+
+            // Line
+            link_line_width = 0.8,
+            dis_limit = 390,
+            add_mouse_point = true,
+            mouse_in = false,
+            mouse_ball = {
+                x: 0,
+                y: 0,
+                vx: 0,
+                vy: 0,
+                r: 0,
+                type: 'mouse'
+            };
+
+        // Random speed
+        function getRandomSpeed(pos) {
+            var min = -0.3,
+                max = 0.3;
+            switch (pos) {
+                case 'top':
+                    return [randomNumFrom(min, max), randomNumFrom(0.1, max)];
+                    break;
+                case 'right':
+                    return [randomNumFrom(min, -0.1), randomNumFrom(min, max)];
+                    break;
+                case 'bottom':
+                    return [randomNumFrom(min, max), randomNumFrom(min, -0.1)];
+                    break;
+                case 'left':
+                    return [randomNumFrom(0.1, max), randomNumFrom(min, max)];
+                    break;
+                default:
+                    return;
+                    break;
+            }
+        }
+        function randomArrayItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+        function randomNumFrom(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+        console.log(randomNumFrom(0, 10));
+        // Random Ball
+        function getRandomBall() {
+            var pos = randomArrayItem(['top', 'right', 'bottom', 'left']);
+            switch (pos) {
+                case 'top':
+                    return {
+                        x: randomSidePos(can_w),
+                        y: -R,
+                        vx: getRandomSpeed('top')[0],
+                        vy: getRandomSpeed('top')[1],
+                        r: R,
+                        alpha: 1,
+                        phase: randomNumFrom(0, 10)
+                    }
+                    break;
+                case 'right':
+                    return {
+                        x: can_w + R,
+                        y: randomSidePos(can_h),
+                        vx: getRandomSpeed('right')[0],
+                        vy: getRandomSpeed('right')[1],
+                        r: R,
+                        alpha: 1,
+                        phase: randomNumFrom(0, 10)
+                    }
+                    break;
+                case 'bottom':
+                    return {
+                        x: randomSidePos(can_w),
+                        y: can_h + R,
+                        vx: getRandomSpeed('bottom')[0],
+                        vy: getRandomSpeed('bottom')[1],
+                        r: R,
+                        alpha: 1,
+                        phase: randomNumFrom(0, 10)
+                    }
+                    break;
+                case 'left':
+                    return {
+                        x: -R,
+                        y: randomSidePos(can_h),
+                        vx: getRandomSpeed('left')[0],
+                        vy: getRandomSpeed('left')[1],
+                        r: R,
+                        alpha: 1,
+                        phase: randomNumFrom(0, 10)
+                    }
+                    break;
+            }
+        }
+        function randomSidePos(length) {
+            return Math.ceil(Math.random() * length);
+        }
+
+        // Draw Ball
+        function renderBalls() {
+            Array.prototype.forEach.call(balls, function (b) {
+                if (!b.hasOwnProperty('type')) {
+                    ctx.fillStyle = 'rgba(' + ball_color.r + ',' + ball_color.g + ',' + ball_color.b + ',' + b.alpha + ')';
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, R, 0, Math.PI * 2, true);
+                    ctx.closePath();
+                    // ctx.fillText("   S", b.x, b.y);
+                    ctx.fill();
+                }
+            });
+        }
+
+        // Update balls
+        function updateBalls() {
+            var new_balls = [];
+            Array.prototype.forEach.call(balls, function (b) {
+                b.x += b.vx;
+                b.y += b.vy;
+
+                if (b.x > -(50) && b.x < (can_w + 50) && b.y > -(50) && b.y < (can_h + 50)) {
+                    new_balls.push(b);
+                }
+
+                // alpha change
+                b.phase += alpha_f;
+                b.alpha = Math.abs(Math.cos(b.phase));
+                // console.log(b.alpha);
+            });
+
+            balls = new_balls.slice(0);
+        }
+
+        // loop alpha
+        function loopAlphaInf() {
+
+        }
+
+        // Draw lines
+        function renderLines() {
+            //console.log('draw lines');
+            var fraction, alpha;
+            for (var i = 0; i < balls.length; i++) {
+                for (var j = i + 1; j < balls.length; j++) {
+
+                    fraction = getDisOf(balls[i], balls[j]) / dis_limit;
+
+                    if (fraction < 1) {
+                        alpha = (1 - fraction).toString();
+
+                        ctx.strokeStyle = 'rgba(0,123,255,' + alpha + ')';
+                        ctx.lineWidth = link_line_width;
+
+                        ctx.beginPath();
+                        ctx.moveTo(balls[i].x, balls[i].y);
+                        ctx.lineTo(balls[j].x, balls[j].y);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                }
+            }
+        }
+
+        // Draw Logo
+        function renderLogo() {
+            // ctx.beginPath();
+            // ctx.fillStyle = 'rgba(' + 0 + ',' + 123 + ',' + 255 + ',' + b.alpha + ')';
+            // ctx.arc(mouse_ball.x, mouse_ball.y, 4, 0, Math.PI * 2, true);
+            // ctx.font = "18px BlinkMacSystemFont";
+            // ctx.fillText("   LOGO ", mouse_ball.x, mouse_ball.y);
+            // ctx.stroke();
+            // ctx.closePath();
+
+
+            var sides = 6,
+                radius = 7;
+            var a = ((Math.PI * 2) / sides);
+            // console.log(a);
+            Array.prototype.forEach.call(balls, function (b) {
+                if (!b.hasOwnProperty('type')) {
+                    //ctx.fillStyle = 'rgba(' + ball_color.r + ',' + ball_color.g + ',' + ball_color.b + ',' + b.alpha + ')';
+
+                    ctx.beginPath();
+                    ctx.arc(mouse_ball.x, mouse_ball.y, 6, 0, Math.PI * 2, true);
+
+                    //ctx.translate(mouse_ball.x, mouse_ball.y);
+                    ctx.moveTo(radius, 0);
+                    for (var i = 1; i < 6; i++) {
+                        //ctx.lineTo(radius * Math.cos(a * i), radius * Math.sin(a * i));
+                    }
+
+                    ctx.closePath();
+                    ctx.fillText("LOGO ", mouse_ball.x - 15, mouse_ball.y - 15);
+                    ctx.fill();
+                }
+            });
+        }
+        // calculate distance between two points
+        function getDisOf(b1, b2) {
+            var delta_x = Math.abs(b1.x - b2.x),
+                delta_y = Math.abs(b1.y - b2.y);
+
+            return Math.sqrt(delta_x * delta_x + delta_y * delta_y);
+        }
+
+        // add balls if there a little balls
+        function addBallIfy() {
+            if (balls.length < 50) {
+                balls.push(getRandomBall());
+            }
+        }
+
+        // Render
+        function render() {
+            ctx.clearRect(0, 0, can_w, can_h);
+
+            renderBalls();
+
+            renderLines();
+
+            renderLogo();
+
+            updateBalls();
+
+            addBallIfy();
+
+            window.requestAnimationFrame(render);
+        }
+
+        // Init Balls
+        function initBalls(num) {
+            for (var i = 1; i <= num; i++) {
+                balls.push({
+                    x: randomSidePos(can_w),
+                    y: randomSidePos(can_h),
+                    vx: getRandomSpeed('top')[0],
+                    vy: getRandomSpeed('top')[1],
+                    r: R,
+                    alpha: 1,
+                    phase: randomNumFrom(0, 10)
+                });
+            }
+        }
+        // Init Canvas
+        function initCanvas() {
+            canvas.setAttribute('width', window.innerWidth);
+            canvas.setAttribute('height', window.innerHeight);
+
+            can_w = parseInt(canvas.getAttribute('width'));
+            can_h = parseInt(canvas.getAttribute('height'));
+        }
+        window.addEventListener('resize', function (e) {
+            console.log('Window Resize...');
+            initCanvas();
+        });
+
+        function goMovie() {
+            initCanvas();
+            initBalls(40);
+            window.requestAnimationFrame(render);
+        }
+        goMovie();
+
+        // Mouse effect
+        canvas.addEventListener('mouseenter', function () {
+            console.log('mouseenter');
+            mouse_in = true;
+            balls.push(mouse_ball);
+        });
+        canvas.addEventListener('mouseleave', function () {
+            console.log('mouseleave');
+            mouse_in = false;
+            var new_balls = [];
+            Array.prototype.forEach.call(balls, function (b) {
+                if (!b.hasOwnProperty('type')) {
+                    new_balls.push(b);
+                }
+            });
+            balls = new_balls.slice(0);
+        });
+        canvas.addEventListener('mousemove', function (e) {
+            var e = e || window.event;
+            // draw logo
+
+            mouse_ball.x = e.pageX;
+            mouse_ball.y = e.pageY;
+            //console.log(mouse_ball);
+        });
+
+
+
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>

@@ -35,3 +35,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 */
 
 Route::get('/article', 'ArticlesController@index')->name('article.index');
+
+/*
+|--------------------------------------------------------------------------
+| Books
+|--------------------------------------------------------------------------
+*/
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('/books', 'BooksController');
+});

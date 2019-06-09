@@ -182,6 +182,9 @@ return [
         // Laravel Datatables
         Yajra\DataTables\DataTablesServiceProvider::class,
 
+        // Core
+        Core\Providers\CoreServiceProvider::class,
+
     ],
 
     /*

@@ -26,4 +26,16 @@ class EditBookRequest extends FormRequest
             "author" => "required",
         ];
     }
+
+    /**
+     * customize msg error
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'title.required' => 'Title is require',
+            'author.required' => 'Author is require'
+        ];
+    }
 }

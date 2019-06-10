@@ -165,6 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Laraviet\BookCRUD\BookCRUDServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -184,6 +185,9 @@ return [
 
         // Core
         Core\Providers\CoreServiceProvider::class,
+
+        // Packager Service for create pakage in Laravel
+        JeroenG\Packager\PackagerServiceProvider::class,
 
     ],
 

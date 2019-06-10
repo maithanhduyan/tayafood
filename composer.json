@@ -10,10 +10,12 @@
     "require": {
         "php": "^7.1.3",
         "fideloper/proxy": "^4.0",
+        "jeroen-g/laravel-packager": "^2.1",
         "laravel/framework": "5.8.*",
         "laravel/passport": "^7.2",
         "laravel/telescope": "^2.0",
         "laravel/tinker": "^1.0",
+        "laraviet/book-crud": "^1.0",
         "yajra/laravel-datatables-oracle": "^9.2"
     },
     "require-dev": {
@@ -37,6 +39,7 @@
     },
     "autoload": {
         "psr-4": {
+            "Laraviet\\BookCRUD\\": "packages/Laraviet/BookCRUD/src",
             "App\\": "app/",
             "Core\\": "core/"
         },
@@ -47,6 +50,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Laraviet\\BookCRUD\\": "packages/Laraviet/BookCRUD/src",
             "Tests\\": "tests/"
         }
     },
